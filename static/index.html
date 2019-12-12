@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>HPD Traffic Information</title>
+		<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap' rel='stylesheet'>
+		<link href='https://fonts.googleapis.com/icon?family=Material+Icons+Outlined' rel='stylesheet'>
+		<link href='https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.css' rel='stylesheet'>
+		<link href='/style/index.css' rel='stylesheet'>
+  <script src='https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.js'></script>
+		<script src='/script/index.js' type='module' defer></script>
+	</head>
+	<body>
+		<header>
+			<img src='hpd.png'>
+			<h1>HPD Traffic Information</h1>
+			<nav>
+				<a href='http://honolulupd.org/'>Honolulu Police Department</a>
+				<a href='http://www2.honolulu.gov/honolulumyway/'>Honolulu My Way</a>
+			</nav>
+		</header>
+		<main>
+			<div id='left-sidebar' class='sidebar'>
+				<section class='input'>
+					<span class='material-icon'>search</span>
+					<input id='search' style='flex: 1;' type='text' placeholder='Search incidents'>
+				</section>
+				<section>
+					<h1>Filter by Area</h1>
+					<div id='area-filter' class='mdc-select'>
+						<div class='mdc-select__anchor' style='width: 100%; border-radius: 4px;'>
+							<i class='mdc-select__dropdown-icon' style='background: url("data:image/svg+xml,%3Csvg%20width%3D%2210px%22%20height%3D%225px%22%20viewBox%3D%227%2010%2010%205%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%0A%20%20%20%20%3Cpolygon%20id%3D%22Shape%22%20stroke%3D%22none%22%20fill%3D%22%23000%22%20fill-rule%3D%22evenodd%22%20opacity%3D%220.54%22%20points%3D%227%2010%2012%2015%2017%2010%22%3E%3C%2Fpolygon%3E%0A%3C%2Fsvg%3E") no-repeat center;'></i>
+							<div class='mdc-select__selected-text' style='padding-top: 15px; border: none;'></div>
+<!--
+							<span class='mdc-floating-label'>Pick a Food Group</span>
+							<div class='mdc-line-ripple'></div>
+-->
+						</div>
+
+						<div class='mdc-select__menu mdc-menu mdc-menu-surface' style='width: 100%;'>
+							<ul class='mdc-list'>
+								<li class='mdc-list-item mdc-list-item--selected' data-value='All' aria-selected='true'>All</li>
+								<li class='mdc-list-item' data-value='Aiea'>Aiea</li>
+								<li class='mdc-list-item' data-value='Aina Haina'>Aina Haina</li>
+								<li class='mdc-list-item' data-value='Airport'>Airport</li>
+								<li class='mdc-list-item' data-value='Ala Moana'>Ala Moana</li>
+								<li class='mdc-list-item' data-value='Downtown'>Downtown</li>
+								<li class='mdc-list-item' data-value='Ewa Beach'>Ewa Beach</li>
+								<li class='mdc-list-item' data-value='Ft Derussy'>Ft Derussy</li>
+								<li class='mdc-list-item' data-value='Hauula'>Hauula</li>
+								<li class='mdc-list-item' data-value='Hawaii Kai'>Hawaii Kai</li>
+								<li class='mdc-list-item' data-value='Honolulu'>Honolulu</li>
+								<li class='mdc-list-item' data-value='Kaaawa'>Kaaawa</li>
+								<li class='mdc-list-item' data-value='Kahala'>Kahala</li>
+								<li class='mdc-list-item' data-value='Kahuku'>Kahuku</li>
+								<li class='mdc-list-item' data-value='Kailua'>Kailua</li>
+								<li class='mdc-list-item' data-value='Kaimuki'>Kaimuki</li>
+								<li class='mdc-list-item' data-value='Kalihi'>Kalihi</li>
+								<li class='mdc-list-item' data-value='Kaneohe'>Kaneohe</li>
+								<li class='mdc-list-item' data-value='Kapahulu'>Kapahulu</li>
+								<li class='mdc-list-item' data-value='Kapolei'>Kapolei</li>
+								<li class='mdc-list-item' data-value='Kunia'>Kunia</li>
+								<li class='mdc-list-item' data-value='Laie'>Laie</li>
+								<li class='mdc-list-item' data-value='Maili'>Maili</li>
+								<li class='mdc-list-item' data-value='Makaha'>Makaha</li>
+								<li class='mdc-list-item' data-value='Makakilo'>Makakilo</li>
+								<li class='mdc-list-item' data-value='Makiki'>Makiki</li>
+								<li class='mdc-list-item' data-value='Manoa'>Manoa</li>
+								<li class='mdc-list-item' data-value='Mapunapuna'>Mapunapuna</li>
+								<li class='mdc-list-item' data-value='Mccully'>Mccully</li>
+								<li class='mdc-list-item' data-value='Mililani'>Mililani</li>
+								<li class='mdc-list-item' data-value='Moanalua'>Moanalua</li>
+								<li class='mdc-list-item' data-value='Moanalua V'>Moanalua V</li>
+								<li class='mdc-list-item' data-value='Nanakuli'>Nanakuli</li>
+								<li class='mdc-list-item' data-value='Nuuanu'>Nuuanu</li>
+								<li class='mdc-list-item' data-value='Pearl City'>Pearl City</li>
+								<li class='mdc-list-item' data-value='Punchbowl'>Punchbowl</li>
+								<li class='mdc-list-item' data-value='Salt Lake'>Salt Lake</li>
+								<li class='mdc-list-item' data-value='Sunset'>Sunset</li>
+								<li class='mdc-list-item' data-value='Wahiawa'>Wahiawa</li>
+								<li class='mdc-list-item' data-value='Waialae'>Waialae</li>
+								<li class='mdc-list-item' data-value='Waianae'>Waianae</li>
+								<li class='mdc-list-item' data-value='Waikiki'>Waikiki</li>
+								<li class='mdc-list-item' data-value='Waimanalo'>Waimanalo</li>
+								<li class='mdc-list-item' data-value='Waipahu'>Waipahu</li>
+								<li class='mdc-list-item' data-value='Waipio'>Waipio</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+				<section>
+					<h1>Filter by Type</h1>
+					<div id='type-filter' class='mdc-select'>
+						<div class='mdc-select__anchor' style='width: 100%; border-radius: 4px;'>
+							<i class='mdc-select__dropdown-icon' style='background: url("data:image/svg+xml,%3Csvg%20width%3D%2210px%22%20height%3D%225px%22%20viewBox%3D%227%2010%2010%205%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%0A%20%20%20%20%3Cpolygon%20id%3D%22Shape%22%20stroke%3D%22none%22%20fill%3D%22%23000%22%20fill-rule%3D%22evenodd%22%20opacity%3D%220.54%22%20points%3D%227%2010%2012%2015%2017%2010%22%3E%3C%2Fpolygon%3E%0A%3C%2Fsvg%3E") no-repeat center;'></i>
+							<div class='mdc-select__selected-text' style='padding-top: 15px; border: none;'></div>
+<!--
+							<span class='mdc-floating-label'>Pick a Food Group</span>
+							<div class='mdc-line-ripple'></div>
+-->
+						</div>
+
+						<div class='mdc-select__menu mdc-menu mdc-menu-surface' style='width: 100%;'>
+							<ul class='mdc-list'>
+								<li class='mdc-list-item mdc-list-item--selected' data-value='Any' aria-selected='true'>Any</li>
+								<li class='mdc-list-item' data-value='Hazardous Driver'>Hazardous driver</li>
+								<li class='mdc-list-item' data-value='Motor Vehicle Collision'>Motor vehicle collision</li>
+								<li class='mdc-list-item' data-value='Motor Vehicle Collision - Towed'>Motor vehicle collision - towed</li>
+								<li class='mdc-list-item' data-value='Stalled/Hazardous Vehicle'>Stalled/hazardous vehicle</li>
+								<li class='mdc-list-item' data-value='Traffic Incident - No Collision'>Traffic incident - no collision</li>
+								<li class='mdc-list-item' data-value='Traffic Nuisance or Parking Violation'>Traffic nuisance or parking violation</li>
+								<li class='mdc-list-item' data-value='Traffic Signal Problem'>Traffic signal problem</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+<!--
+				<section>
+					<h1>Debug</h1>
+					<button id='recalc' class='mdc-button mdc-button--raised'>
+						<span class='mdc-button__label'>Recalc</span>
+					</button>
+					<button id='time' class='mdc-button mdc-button--raised'>
+						<span class='mdc-button__label'>Time</span>
+					</button>
+				</section>
+-->
+			</div>
+			<div style='flex: 1;'>
+				<div class='sticky'>
+					<div class='toolbar'>
+						<div id='progress'></div>
+						<div id='status'>Updating...</div>
+						<div style='flex: 1;'></div>
+						<div id='refresh-info' class='material-icon' style='margin-right: calc(var(--element-spacing) / 2); color: var(--theme-gray-color); cursor: default;'>info</div>
+						<div id='updated' style='text-align: right;'></div>
+						<div id='refresh' class='button'><div class='material-icon'>refresh</div></div>
+					</div>
+					<table>
+						<thead id='thead'>
+							<tr>
+								<th>Time</th>
+								<th>Type</th>
+								<th>Area</th>
+								<th>Address</th>
+								<th>Location</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<table>
+					<tbody id='tbody'>
+					</tbody>
+				</table>
+			</div>
+		</main>
+		<footer>
+			<section data-label='Navigation'>
+				<a href='http://honolulupd.org/'>Honolulu Police Department</a>
+				<a href='http://www2.honolulu.gov/honolulumyway/'>Honolulu My Way</a>
+				<a style='padding-left: calc(var(--element-spacing) * 2);' href='http://www2.honolulu.gov/honolulumyway/?trafficcam'>Traffic Cameras</a>
+			</section>
+			<section data-label='Related Links'>
+				<a href='https://www.oahumpo.org/'>Oahu Metropolitan Planning Organization</a>
+				<a href='https://www.honolulu.gov/it'>Department of Information Technology</a>
+			</section>
+		</footer>
+	</body>
+</html>

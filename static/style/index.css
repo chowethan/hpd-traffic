@@ -1,0 +1,278 @@
+:root {
+	--theme-secondary-background: #132D50;
+	--theme-secondary-color: #FFF;
+	--theme-gray-color: rgba(0, 0, 0, 0.6);
+	--navigation-height: 4rem;
+	--element-spacing: 1rem;
+	--divider-color: rgba(0, 0, 0, 0.12);
+	--divider-border: 1px solid rgba(0, 0, 0, 0.12);
+	--divider-border: 1px solid #DDD;
+	--transition-duration: 125ms;
+	--toolbar-height: 4rem;
+	--hover-opacity: 0.3125;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	margin: 0;
+	overflow: hidden;
+}
+
+body,
+input,
+button {
+	font-family: 'Roboto', sans-serif;
+}
+
+header {
+	display: flex;
+	padding: 0 var(--element-spacing);
+	height: var(--navigation-height);
+	line-height: var(--navigation-height);
+	background: var(--theme-secondary-background);
+	color: var(--theme-secondary-color);
+}
+
+header > h1 {
+	margin: 0 var(--element-spacing) 0 0;
+	font-size: 1.5em;
+	font-weight: 400;
+}
+
+header > nav {
+	flex: 1;
+	display: flex;
+	flex-direction: row;
+}
+
+header > nav > a {
+	display: inline-block;
+	padding: 0 var(--element-spacing);
+	font-weight: 300;
+	color: var(--theme-secondary-color);
+	text-decoration: none;
+}
+
+header > nav > a:hover {
+	background: rgba(255, 255, 255, var(--hover-opacity));
+}
+
+main {
+	display: flex;
+	flex: 1;
+	overflow: hidden;
+}
+
+main > div {
+	overflow: auto;
+}
+
+footer {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: -8.7em;
+	justify-content: space-evenly;
+	background: var(--theme-secondary-background);
+	color: var(--theme-secondary-color);
+	transition: margin-bottom var(--transition-duration);
+}
+
+footer:hover {
+	margin-bottom: 0;
+}
+
+footer:hover::before {
+	content: '';
+	position: absolute;
+	top: calc(-1 * var(--element-spacing) * 4);
+	left: 0;
+	width: 100vw;
+	height: calc(var(--element-spacing) * 4);
+}
+
+footer > section {
+	position: relative;
+	margin: var(--element-spacing) calc(var(--element-spacing) / 2);
+}
+
+footer > section[data-label]::before {
+	content: attr(data-label);
+	display: block;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.375);
+	margin-bottom: var(--element-spacing);
+	padding: 0 0 var(--element-spacing);
+}
+
+footer > section::after {
+	content: 'keyboard_arrow_down';
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 1em;
+	height: 1.125em;
+	font-family: 'Material Icons Outlined';
+	font-size: 1.333em;
+	line-height: 1.125;
+	transition: transform var(--transition-duration);
+}
+
+footer:hover > section[data-label]::after {
+	transform: rotate(180deg);
+}
+
+footer > section > a {
+	padding: calc(var(--element-spacing) / 2) var(--element-spacing);
+	display: block;
+	font-weight: 300;
+	color: var(--theme-secondary-color);
+	text-decoration: none;
+}
+
+footer > section > a:hover {
+	background: rgba(255, 255, 255, var(--hover-opacity));
+}
+
+input[type='text'] {
+	min-width: 0;
+	padding: var(--element-spacing) var(--element-spacing);
+	border: none;
+	background: none;
+	font-size: 1rem;
+	color: var(--theme-gray-color);
+	box-sizing: border-box;
+}
+
+input[type='text']:focus {
+	outline: none;
+}
+
+.sidebar {
+	max-width: 20em;
+	min-width: 13em;
+	width: 20vw;
+	border-right: var(--divider-border);
+	background: #FCFCFC;
+}
+
+.sidebar > section {
+	border-bottom: var(--divider-border);
+	padding: var(--element-spacing);
+}
+
+.sidebar > section.input {
+	display: flex;
+	flex-direction: row;
+	padding: 0;
+	height: var(--toolbar-height);
+}
+
+.sidebar > input {
+	width: 100%;
+}
+
+.sidebar h1 {
+	color: var(--theme-gray-color);
+	font-size: 12px;
+	font-weight: 600;
+	margin-bottom: 24px;
+	text-transform: uppercase;
+}
+
+.material-icon {
+	width: 1em;
+	height: 1em;
+	margin: auto 0 auto var(--element-spacing);
+	font-family: 'Material Icons Outlined';
+	font-size: 1.333em;
+	line-height: 1.125;
+}
+
+.sticky {
+	position: sticky;
+	top: 0;
+	background: #FFF;
+}
+
+.sticky > .toolbar {
+	display: flex;
+	flex-direction: row;
+	padding: 0 var(--element-spacing);
+	height: var(--toolbar-height);
+/*	line-height: var(--toolbar-height);*/
+}
+
+.sticky > .toolbar > div {
+	margin: auto 0;
+}
+
+.sticky > .toolbar > #progress {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: var(--toolbar-height);
+	background: rgba(33, 150, 243, 0.27);
+	transition: width 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+	z-index: -1;
+}
+
+.sticky > .toolbar > .button {
+	margin: auto calc(var(--element-spacing) * -1) auto 0;
+	padding: var(--element-spacing);
+	border-radius: 100%;
+	cursor: pointer;
+	transition: opacity var(--transition-duration);
+}
+
+.sticky > .toolbar > .button:hover {
+/*	background: rgba(0, 0, 0, var(--hover-opacity));*/
+	opacity: 0.5;
+}
+
+.sticky > .toolbar .material-icon {
+	margin-left: 0;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th {
+	font-weight: 500;
+	box-sizing: border-box;
+}
+
+th,
+td {
+	padding: calc(var(--element-spacing) / 2) var(--element-spacing);
+	border: var(--divider-border);
+}
+
+tbody > tr:nth-child(2n + 1) {
+	background: #F6F6F6;
+}
+
+tr:first-child > td {
+	border-top: none;
+}
+
+th:first-child,
+td:first-child {
+	border-left: none;
+}
+
+th:last-child,
+td:last-child {
+	border-right: none;
+}
+
+.tooltip {
+	position: absolute;
+	padding: 0.5em;
+	background: #FFF;
+	border: 1px solid #000;
+}
