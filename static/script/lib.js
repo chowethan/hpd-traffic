@@ -3,61 +3,20 @@ let _ = {};
 (() => {
 	let insertElement = document.createElement('div');
 	
-//	_.request = (url, method, headers, body) => {
-//		method = method ? method : 'GET';
-//
-//		return fetch(url, {
-//			method: method,
-//			cache: 'no-cache',
-//			headers: headers ? headers : undefined,
-//			body: method == 'GET' || method == 'HEAD' || !body ? undefined : body
-//		});
-//	};
-	
-	_.request = async (url, method, headers, body) => {
+	_.request = (url, method, headers, body) => {
 		method = method ? method : 'GET';
 
-		let response = await fetch(url, {
+		return fetch(url, {
 			method: method,
 			cache: 'no-cache',
 			headers: headers ? headers : undefined,
 			body: method == 'GET' || method == 'HEAD' || !body ? undefined : body
 		});
-		let length = response.headers.get('Content-Length');
-		
-		if (!length) {
-			// something was wrong with response, just give up
-			return await response.arrayBuffer();
-		}
-		
-		const array = new Uint8Array(length);
-		let at = 0;  // to index into the array
-		const reader = response.body.getReader();
-		
-		while (true) {
-			const {done, value} = await reader.read();
-			
-			if (done) {
-				break;
-			}
-			
-			array.set(value, at);
-			at += value.length;
-			console.log(at, length);
-		}
-		
-		return new TextDecoder("utf-8").decode(array);
 	};
-
-//	_.getJSON = (url, headers) => {
-//		return _.request(url, 'GET', headers).then((response) => {
-//			return response.json();
-//		});
-//	};
 
 	_.getJSON = (url, headers) => {
 		return _.request(url, 'GET', headers).then((response) => {
-			return JSON.parse(response);
+			return response.json();
 		});
 	};
 	

@@ -6,12 +6,12 @@
 		<link href='https://fonts.googleapis.com/icon?family=Material+Icons+Outlined' rel='stylesheet'>
 		<link href='https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.css' rel='stylesheet'>
 		<link href='/style/index.css' rel='stylesheet'>
-  <script src='https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.js'></script>
+		<script src='https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.js'></script>
 		<script src='/script/index.js' type='module' defer></script>
 	</head>
 	<body>
 		<header>
-			<img src='hpd.png'>
+			<img class='logo' src='hpd.png'>
 			<h1>HPD Traffic Information</h1>
 			<nav>
 				<a href='http://honolulupd.org/'>Honolulu Police Department</a>
@@ -138,11 +138,11 @@
 					<table>
 						<thead id='thead'>
 							<tr>
-								<th>Time</th>
-								<th>Type</th>
-								<th>Area</th>
-								<th>Address</th>
-								<th>Location</th>
+								<th data-type='time'><div><span>Time</span><span class='material-icon'>arrow_drop_down</span></div></th>
+								<th data-type='type'><div><span>Type</span><span class='material-icon' style='display: none;'>arrow_drop_down</span></div></th>
+								<th data-type='area'><div><span>Area</span><span class='material-icon' style='display: none;'>arrow_drop_down</span></div></th>
+								<th data-type='address'><div><span>Address</span><span class='material-icon' style='display: none;'>arrow_drop_down</span></div></th>
+								<th data-type='location'><div><span>Location</span><span class='material-icon' style='display: none;'>arrow_drop_down</span></div></th>
 							</tr>
 						</thead>
 					</table>

@@ -1,6 +1,13 @@
 import _ from './lib.js';
 import Tooltip from './tooltip.js';
 const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const defaultSortOrder = {
+	time: 'descending',
+	type: 'ascending',
+	area: 'ascending',
+	address: 'ascending',
+	location: 'ascending',
+};
 
 let tableHeadElement = document.getElementById('thead').children[0];
 let tableBodyElement = document.getElementById('tbody');
@@ -9,7 +16,8 @@ let updatedElement = document.getElementById('updated');
 
 let records = [];
 let lastUpdated = -1;
-let filter = {search: null, area: null, type: null};
+let filter = {search: null, area: null, type: null, sort: {type: 'time', order: 'descending'}};
+window.filter = filter;
 
 function getTimeDifference(difference, short) {
 	if (difference < 10000) {
@@ -52,7 +60,6 @@ function recalculateColumns() {
 		let widths = [];
 
 		if (tableBodyElement.children.length > 0) {
-			let start = performance.now();
 			for (let cell of tableBodyElement.children[0].children) {
 				widths.push(cell.getBoundingClientRect().width);
 			}
@@ -62,7 +69,6 @@ function recalculateColumns() {
 				tableHeadElement.children[i].style.minWidth = `${widths[i]}px`;
 				tableHeadElement.children[i].style.width = `${widths[i]}px`;
 			}
-			console.log(`Column recalculation took ${performance.now() - start} ms`);
 		}
 
 	});
@@ -107,6 +113,7 @@ function filterIncident({search: terms, area, type}) {
 	];
 //	let lowRelevanceTerms = ['st', 'rd', 'ave', 'hwy', 'pl', 'ln', 'dr', 'bl', 'lp', 'cir', 'fwy'];
 	let lowRelevanceTerms = [];
+	let sortOrder = filter.sort.order === 'descending' ? -1 : 1;
 	let comparisonKeys = ['type', 'area', 'address', 'location'];
 	
 	terms = terms.toLowerCase();
@@ -123,7 +130,7 @@ function filterIncident({search: terms, area, type}) {
 		let matches = {};
 		
 		// Filter area and type
-		if (filter.area !== null && (record.area === null || record.area.toLowerCase() !== filter.area.toLowerCase())) {
+		if (filter.area !== null && (record.area === '' || record.area.toLowerCase() !== filter.area.toLowerCase())) {
 			continue;
 		} else if (filter.type !== null && record.type.toLowerCase() !== filter.type.toLowerCase()) {
 			continue;
@@ -132,20 +139,16 @@ function filterIncident({search: terms, area, type}) {
 		// Store the value used for comparison of each key in comparisonValues
 		// Store the matches for each key in matches
 		for (let key of comparisonKeys) {
-			if (record[key] !== null) {
+			if (record[key] !== '') {
 				comparisonValues[key] = record[key].toLowerCase();
 				matches[key] = { high: [], low: [] };
 			}
 		}
-		// Used to determine how relevant a result is based on the order of the original search terms
-		let matchPositions = [];
-		let orderScore = 0;
-		let lowRelevanceMatches = [];
 		
 		// Replace all of the comparison values with the record replacements
 		for (let j = 0; j < recordReplacements.length; j++) {
 			for (let key of comparisonKeys) {
-				if (record[key] !== null) {
+				if (record[key] !== '') {
 					comparisonValues[key] = comparisonValues[key].replace(recordReplacements[j][0], recordReplacements[j][1]);
 				}
 			}
@@ -154,32 +157,22 @@ function filterIncident({search: terms, area, type}) {
 		// Generate the matches for all of the comparison keys
 		for (let j = 0; j < terms.length; j++) {
 			for (let key of comparisonKeys) {
-				if (record[key] !== null) {
+				if (record[key] !== '') {
 					if (comparisonValues[key].indexOf(terms[j]) != -1) {
 						if (lowRelevanceTerms.indexOf(terms[j]) != -1) {
 							matches[key].low.push(terms[j]);
 						} else {
 							matches[key].high.push(terms[j]);
-							matchPositions.push(comparisonValues[key].indexOf(terms[j]));
 						}
 					}
 				}
 			}
 		}
 		
-		// Create the order score, to elevate records that have words in the same order as the query
-		let previousPosition = matchPositions.length > 0 ? matchPositions[0] : 0;
-		for (let i = 1; i < matchPositions.length; i++) {
-			if (previousPosition < matchPositions[i]) {
-				orderScore++;
-				previousPosition = matchPositions[i];
-			}
-		}
-		
 		let relevance = 0;
 		
 		for (let key of comparisonKeys) {
-			if (record[key] !== null) {
+			if (record[key] !== '') {
 				relevance += (matches[key].high.length + (matches[key].low.length / 4));
 			}
 		}
@@ -188,11 +181,10 @@ function filterIncident({search: terms, area, type}) {
 		relevance /= terms.length;
 		
 		if (relevance > 0.2) {
-			results.push({...record, relevance: relevance, orderScore: orderScore});
+			results.push({...record, relevance: relevance});
 		}
 	}
 	
-	/*
 	// Sort results
 	if (terms === '') {
 		results.sort((a, b) => {
@@ -203,18 +195,32 @@ function filterIncident({search: terms, area, type}) {
 			}
 		});
 	} else {
-		results.sort(function (a, b) {
-			if (a.relevance != b.relevance) {
-				return a.relevance > b.relevance ? -1 : 1;
+		results.sort((a, b) => {
+			// String comparisons are the composed ternary form of
+			/*
+			if (a.type === b.type) {
+				return 0;
 			} else {
-				if (a.orderScore != b.orderScore) {
-					return a.orderScore > b.orderScore ? -1 : 1;
+				if (a.type === '' || b.type === '') {
+					return a.type === '' ? sortOrder : -sortOrder;
 				} else {
-					return a.Name < b.Name ? -1 : 1;
+					return a.type < b.type ? -sortOrder : sortOrder
 				}
 			}
+			*/
+			if (filter.sort.type === 'time') {
+				return a.time.getTime() === b.time.getTime() ? 0 : a.time.getTime() < b.time.getTime() ? -sortOrder : sortOrder;
+			} else if (filter.sort.type === 'type') {
+				return a.type === b.type ? 0 : a.type === '' || b.type === '' ? a.type === '' ? sortOrder : -sortOrder : a.type < b.type ? -sortOrder : sortOrder;
+			} else if (filter.sort.type === 'area') {
+				return a.area === b.area ? 0 : a.area === '' || b.area === '' ? a.area === '' ? sortOrder : -sortOrder : a.area < b.area ? -sortOrder : sortOrder;
+			} else if (filter.sort.type === 'address') {
+				return a.address === b.address ? 0 : a.address === '' || b.address === '' ? a.address === '' ? sortOrder : -sortOrder : a.address < b.address ? -sortOrder : sortOrder;
+			} else if (filter.sort.type === 'location') {
+				return a.location === b.location ? 0 : a.location === '' || b.location === '' ? a.location === '' ? sortOrder : -sortOrder : a.location < b.location ? -sortOrder : sortOrder;
+			}
 		});
-	}*/
+	}
 	
 	return results;
 }
@@ -277,13 +283,54 @@ async function loadIncidents() {
 	updateStatus('Updating...');
 	try {
 		records = await _.getJSON('/api/incidents');
+		for (let record of records) {
+			record.time = new Date(record.time);
+		}
 		lastUpdated = Date.now();
 
 		updateIncidents();
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		updateStatus('An error occurred');
 	}
+}
+
+function changeSort(event) {
+	let thElement = event.target;
+	
+	while (thElement.tagName !== 'TH') {
+		thElement = thElement.parentElement;
+	}
+	
+	let sortType = thElement.dataset.type;
+	
+	if (filter.sort.type !== sortType) {
+		filter.sort.type = sortType;
+		filter.sort.order = defaultSortOrder[sortType];
+	} else {
+		if (filter.sort.order === 'descending') {
+			filter.sort.order = 'ascending';
+		} else {
+			filter.sort.order = 'descending';
+		}
+	}
+	
+	if (filter.sort.order == 'descending') {
+		thElement.firstChild.children[1].innerText = 'arrow_drop_down';
+	} else {
+		thElement.firstChild.children[1].innerText = 'arrow_drop_up';
+	}
+	
+	let allThElements = document.querySelectorAll('th');
+	for (let eachThElement of allThElements) {
+		if (eachThElement == thElement) {
+			eachThElement.firstChild.children[1].style.display = '';
+		} else {
+			eachThElement.firstChild.children[1].style.display = 'none';
+		}
+	}
+	
+	updateIncidents();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -295,6 +342,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	for (let selectElement of selectElements) {
 //		mdc.select.MDCSelect.attachTo(selectElement);
 		selectElement.mdcElement = new mdc.select.MDCSelect(selectElement);
+	}
+	
+	let thElements = document.querySelectorAll('th');
+	for (let thElement of thElements) {
+		thElement.addEventListener('click', changeSort);
 	}
 	
 	document.getElementById('search').addEventListener('input', (event) => {
@@ -315,10 +367,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		requestAnimationFrame(() => {
 			requestAnimationFrame(() => {
-				let dropdown = selectElement.querySelector('.mdc-select__menu');
+				let selectRect = selectElement.getBoundingClientRect();
 				let sidebarRect = leftSidebar.getBoundingClientRect();
+				let dropdown = selectElement.querySelector('.mdc-select__menu');
 				let dropdownRect = dropdown.getBoundingClientRect();
-				dropdown.style.maxHeight = `${(sidebarRect.height + sidebarRect.y) - dropdownRect.y}px`;
+				if (selectRect.y < dropdownRect.y) {
+					// Menu appears below select menu
+					dropdown.style.maxHeight = `${(sidebarRect.height + sidebarRect.y) - dropdownRect.y}px`;
+				} else {
+					// Menu appears above select menu
+					dropdown.style.maxHeight = `${selectRect.y - sidebarRect.y}px`;
+				}
 			});
 		});
 	}
@@ -326,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	let areaFilterElement = document.getElementById('area-filter');
 	let typeFilterElement = document.getElementById('type-filter');
 	
-	// Fix dropdown length
+	// Fix dropdown length overflowing the sidebar
 	areaFilterElement.addEventListener('mouseup', resizeDropdown);
 	typeFilterElement.addEventListener('mouseup', resizeDropdown);
 	

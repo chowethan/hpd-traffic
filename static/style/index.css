@@ -35,6 +35,11 @@ header {
 	color: var(--theme-secondary-color);
 }
 
+header > .logo {
+	height: calc(100% - 0.5em);
+	margin: 0.25em 1em 0.25em 0;
+}
+
 header > h1 {
 	margin: 0 var(--element-spacing) 0 0;
 	font-size: 1.5em;
@@ -244,12 +249,33 @@ table {
 th {
 	font-weight: 500;
 	box-sizing: border-box;
+	cursor: pointer;
+}
+
+th:hover {
+	background:  rgba(0, 0, 0, calc(var(--hover-opacity) / 2));
+}
+
+th div {
+	display: flex;
+}
+
+th div span {
+	margin: auto 0;
+}
+
+th .material-icon {
+	margin-left: auto;
 }
 
 th,
 td {
 	padding: calc(var(--element-spacing) / 2) var(--element-spacing);
 	border: var(--divider-border);
+}
+
+th {
+	padding-right: calc(var(--element-spacing) / 2);
 }
 
 tbody > tr:nth-child(2n + 1) {
@@ -275,4 +301,8 @@ td:last-child {
 	padding: 0.5em;
 	background: #FFF;
 	border: 1px solid #000;
+}
+
+.material-icon {
+	user-select: none;
 }

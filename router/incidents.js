@@ -118,9 +118,11 @@ function getIncidents() {
 					incidents.push({
 						time: new Date(`${date} ${time}`),
 						type: toSentenceCase(type),
-						area: area === '' ? null : toTitleCase(transformArea(area)),
+//						area: area === '' ? null : toTitleCase(transformArea(area)),
+						area: toTitleCase(transformArea(area)),
 						address: toAddressCase(transformLocations(address)),
-						location: location === '' ? null : toAddressCase(transformLocations(location))
+//						location: location === '' ? null : toAddressCase(transformLocations(location))
+						location: toAddressCase(transformLocations(location))
 					});
 				}
 
