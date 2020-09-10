@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "handlebars": "^4.5.1",
+    "handlebars": "^4.5.3",
     "http-errors": "^1.7.3",
     "node-html-parser": "^1.1.16"
   }
